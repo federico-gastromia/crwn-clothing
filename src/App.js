@@ -54,8 +54,17 @@ class App extends React.Component {
         <Header />
         <Switch>
           <Route exact path="/" component={HomePage} />
-          <Route exact path="/shop" component={ShopPage} />
-          <Route exact path='/checkout' component={CheckoutPage}/>
+
+          {/* Path does not need exact for category component to be rendered. Consider two cases:
+          - <Route exact path="/shop" .. />
+          In this case when we type /shop/hats the ShopPage does not get rendered because it responds only 
+          to exactly /shop,therefore we do not get to add the Route /shop/:categoryId.
+          - <Route path="/shop" .. />
+          In this case when we type /shop/hats the Switch returns the first match -> /shop and React 
+          renders the ShopPage component, then from the ShopPage we get the match.path and add the Route 
+          with /shop/hats which returns our category. */}
+          <Route path="/shop" component={ShopPage} />
+          <Route exact path="/checkout" component={CheckoutPage} />
           <Route
             exact
             path="/signin"
