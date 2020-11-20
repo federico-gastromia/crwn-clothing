@@ -8,12 +8,12 @@ export const selectCollections = createSelector(
 );
 
 export const selectCollectionsForPreview = createSelector(
-    [selectCollections], // returns the collections object
-    collections => Object.keys(collections).map(key => collections[key]) // will return an array of items
-)
+  [selectCollections], // returns the collections object
+  (collections) =>
+    collections ? Object.keys(collections).map((key) => collections[key]) : [] // will return an array of items
+);
 
 export const selectCollection = (collectionUrlParam) =>
-  createSelector(
-    [selectCollections],
-    (collections) => collections[collectionUrlParam]
+  createSelector([selectCollections], (collections) =>
+    collections ? collections[collectionUrlParam] : null
   );
