@@ -1,7 +1,9 @@
 import React from "react";
 import FormInput from "../form-input/form-input.component";
 import CustomButton from "../custom-button/custom-button.component";
-import { auth, signInWithGoogle } from "../../firebase/firebase.utils";
+import { connect } from "react-redux";
+
+import { googleSignInStart, emailSignInStart } from "../../redux/user/user.actions";
 
 import "./sign-in.styles.scss";
 
@@ -17,15 +19,10 @@ class SignIn extends React.Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
+    const { emailSignInStart } = this.props
+    const { email, password } = this.state
 
-    const { email, passsword } = this.state;
-
-    try {
-      await auth.signInWithEmailAndPassword(email, passsword);
-      this.setState({ email: "", password: "" });
-    } catch (error) {
-      console.log(error);
-    }
+    emailSignInStart(email, password)
   };
 
   handleChange = (event) => {
@@ -35,6 +32,7 @@ class SignIn extends React.Component {
   };
 
   render() {
+    const { googleSignInStart } = this.props;
     return (
       <div className="sign-in">
         <h2>I already have an account</h2>
@@ -58,7 +56,11 @@ class SignIn extends React.Component {
           />
           <div className="buttons">
             <CustomButton type="submit">sign in</CustomButton>
-            <CustomButton onClick={signInWithGoogle} isGoogleSignIn>
+            <CustomButton
+              type="button"
+              onClick={googleSignInStart}
+              isGoogleSignIn
+            >
               {" "}
               Sign in with google{" "}
             </CustomButton>
@@ -69,4 +71,10 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+const mapDispatchToProps = (dispatch) => ({
+  googleSignInStart: () => dispatch(googleSignInStart()),
+  // Email and password are passed in the action as a single object
+  emailSignInStart: (email, password) => dispatch(emailSignInStart({email, password}))
+});
+
+export default connect(null, mapDispatchToProps)(SignIn);
